@@ -314,15 +314,11 @@ services:
       - type: bind
         source: ./nginx/https.conf.template
         target: /etc/nginx/https.conf.template
-      - type: volume
-        source: ./nginx/conf.d
-        target: /etc/nginx/conf.d
+      - ./nginx/conf.d:/etc/nginx/conf.d
       - type: bind
         source: ./nginx/docker-entrypoint.sh
         target: /docker-entrypoint-mount.sh
-      - type: volume
-        source: ./nginx/ssl
-        target: /etc/ssl
+      - ./nginx/ssl:/etc/ssl
     entrypoint: [ "sh", "-c", "cp /docker-entrypoint-mount.sh /docker-entrypoint.sh && sed -i 's/\r$$//' /docker-entrypoint.sh && chmod +x /docker-entrypoint.sh && /docker-entrypoint.sh" ]
     environment:
       NGINX_SERVER_NAME: ${NGINX_SERVER_NAME:-_}
