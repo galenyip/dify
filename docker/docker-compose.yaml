@@ -281,8 +281,12 @@ services:
     image: ubuntu/squid:latest
     restart: always
     volumes:
-      - ${PWD}/ssrf_proxy/squid.conf.template:/etc/squid/squid.conf.template
-      - ${PWD}/ssrf_proxy/docker-entrypoint.sh:/docker-entrypoint-mount.sh
+      - type: bind
+        source: ${PWD}/ssrf_proxy/squid.conf.template
+        target: /etc/squid/squid.conf.template
+      - type: bind
+        source: ${PWD}/ssrf_proxy/docker-entrypoint.sh
+        target: /docker-entrypoint-mount.sh
     entrypoint: [ "sh", "-c", "cp /docker-entrypoint-mount.sh /docker-entrypoint.sh && sed -i 's/\r$$//' /docker-entrypoint.sh && chmod +x /docker-entrypoint.sh && /docker-entrypoint.sh" ]
     environment:
       # pls clearly modify the squid env vars to fit your network environment.
@@ -301,12 +305,24 @@ services:
     image: nginx:latest
     restart: always
     volumes:
-      - ${PWD}/nginx/nginx.conf.template:/etc/nginx/nginx.conf.template
-      - ${PWD}/nginx/proxy.conf.template:/etc/nginx/proxy.conf.template
-      - ${PWD}/nginx/https.conf.template:/etc/nginx/https.conf.template
-      - .${PWD}/nginx/conf.d:/etc/nginx/conf.d
-      - ${PWD}/nginx/docker-entrypoint.sh:/docker-entrypoint-mount.sh
-      - ${PWD}/nginx/ssl:/etc/ssl
+      - type: bind
+        source: ${PWD}/nginx/nginx.conf.template
+        target: /etc/nginx/nginx.conf.template
+      - type: bind
+        source: ${PWD}/nginx/proxy.conf.template
+        target: /etc/nginx/proxy.conf.template
+      - type: bind
+        source: ${PWD}/nginx/https.conf.template
+        target: /etc/nginx/https.conf.template
+      - type: bind
+        source: ${PWD}/nginx/conf.d
+        target: /etc/nginx/conf.d
+      - type: bind
+        source: ${PWD}/nginx/docker-entrypoint.sh
+        target: /docker-entrypoint-mount.sh
+      - type: bind
+        source: ${PWD}/nginx/ssl
+        target: /etc/ssl
     entrypoint: [ "sh", "-c", "cp /docker-entrypoint-mount.sh /docker-entrypoint.sh && sed -i 's/\r$$//' /docker-entrypoint.sh && chmod +x /docker-entrypoint.sh && /docker-entrypoint.sh" ]
     environment:
       NGINX_SERVER_NAME: ${NGINX_SERVER_NAME:-_}
