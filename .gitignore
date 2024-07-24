@@ -177,3 +177,6 @@ pyrightconfig.json
 api/.vscode
 
 .idea/
+
+!**/.gitkeep
+!*/
