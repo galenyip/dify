@@ -317,7 +317,7 @@ services:
       - type: bind
         source: ./nginx/conf.d
         target: /etc/nginx/conf.d
-      - type: volume
+      - type: bind
         source: ./nginx/docker-entrypoint.sh
         target: /docker-entrypoint-mount.sh
       - type: volume
