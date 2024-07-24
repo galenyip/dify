@@ -584,3 +584,5 @@ networks:
 
 volumes:
   oradata:
+  dify_pgdata:
+    external: true
