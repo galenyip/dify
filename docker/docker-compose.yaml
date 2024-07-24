@@ -235,7 +235,7 @@ services:
       POSTGRES_DB: ${POSTGRES_DB:-dify}
       PGDATA: ${PGDATA:-/var/lib/postgresql/data/pgdata}
     volumes:
-      - ./volumes/db/data:/var/lib/postgresql/data
+      - dify_pgdata:/var/lib/postgresql/data
     healthcheck:
       test: [ "CMD", "pg_isready" ]
       interval: 1s
@@ -282,10 +282,10 @@ services:
     restart: always
     volumes:
       - type: bind
-        source: ./ssrf_proxy/squid.conf.template
+        source: ${PWD}/ssrf_proxy/squid.conf.template
         target: /etc/squid/squid.conf.template
       - type: bind
-        source: ./ssrf_proxy/docker-entrypoint.sh
+        source: ${PWD}/ssrf_proxy/docker-entrypoint.sh
         target: /docker-entrypoint-mount.sh
     entrypoint: [ "sh", "-c", "cp /docker-entrypoint-mount.sh /docker-entrypoint.sh && sed -i 's/\r$$//' /docker-entrypoint.sh && chmod +x /docker-entrypoint.sh && /docker-entrypoint.sh" ]
     environment:
