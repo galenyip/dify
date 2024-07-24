@@ -321,7 +321,7 @@ services:
         source: ${PWD}/nginx/docker-entrypoint.sh
         target: /docker-entrypoint-mount.sh
       - type: bind
-        source: ./nginx/ssl
+        source: ${PWD}/nginx/ssl
         target: /etc/ssl
     entrypoint: [ "sh", "-c", "cp /docker-entrypoint-mount.sh /docker-entrypoint.sh && sed -i 's/\r$$//' /docker-entrypoint.sh && chmod +x /docker-entrypoint.sh && /docker-entrypoint.sh" ]
     environment:
