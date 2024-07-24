@@ -191,7 +191,7 @@ services:
       - redis
     volumes:
       # Mount the storage directory to the container, for storing user files.
-      - dify_volume/app/storage:/app/api/storage
+      - ./volumes/app/storage:/app/api/storage
     networks:
       - ssrf_proxy_network
       - default
@@ -211,7 +211,7 @@ services:
       - redis
     volumes:
       # Mount the storage directory to the container, for storing user files.
-      - dify_volume/app/storage:/app/api/storage
+      - ./volumes/app/storage:/app/api/storage
     networks:
       - ssrf_proxy_network
       - default
@@ -235,7 +235,7 @@ services:
       POSTGRES_DB: ${POSTGRES_DB:-dify}
       PGDATA: ${PGDATA:-/var/lib/postgresql/data/pgdata}
     volumes:
-      - dify_volume/pgdata:/var/lib/postgresql/data
+      - dify_pgdata:/var/lib/postgresql/data
     healthcheck:
       test: [ "CMD", "pg_isready" ]
       interval: 1s
@@ -248,7 +248,7 @@ services:
     restart: always
     volumes:
       # Mount the redis data directory to the container.
-      - dify_volume/redis/data:/data
+      - ./volumes/redis/data:/data
     # Set the redis password when startup redis server.
     command: redis-server --requirepass ${REDIS_PASSWORD:-difyai123456}
     healthcheck:
@@ -270,7 +270,7 @@ services:
       HTTPS_PROXY: ${SANDBOX_HTTPS_PROXY:-http://ssrf_proxy:3128}
       SANDBOX_PORT: ${SANDBOX_PORT:-8194}
     volumes:
-      - dify_volume/sandbox/dependencies:/dependencies
+      - ./volumes/sandbox/dependencies:/dependencies
     networks:
       - ssrf_proxy_network
 
@@ -339,7 +339,7 @@ services:
     restart: always
     volumes:
       # Mount the Weaviate data directory to the con tainer.
-      - dify_volume/weaviate:/var/lib/weaviate
+      - ./volumes/weaviate:/var/lib/weaviate
     environment:
       # The Weaviate configurations
       # You can refer to the [Weaviate](https://weaviate.io/developers/weaviate/config-refs/env-vars) documentation for more information.
@@ -362,7 +362,7 @@ services:
       - qdrant
     restart: always
     volumes:
-      - dify_volume/qdrant:/qdrant/storage
+      - ./volumes/qdrant:/qdrant/storage
     environment:
       QDRANT_API_KEY: ${QDRANT_API_KEY:-difyai123456}
 
@@ -381,7 +381,7 @@ services:
       # postgres data directory
       PGDATA: ${PGVECTOR_PGDATA:-/var/lib/postgresql/data/pgdata}
     volumes:
-      - dify_volume/pgvector/data:/var/lib/postgresql/data
+      - ./volumes/pgvector/data:/var/lib/postgresql/data
     healthcheck:
       test: [ "CMD", "pg_isready" ]
       interval: 1s
@@ -403,7 +403,7 @@ services:
       # postgres data directory
       PGDATA: ${PGVECTOR_PGDATA:-/var/lib/postgresql/data/pgdata}
     volumes:
-      - dify_volume/pgvecto_rs/data:/var/lib/postgresql/data
+      - ./volumes/pgvecto_rs/data:/var/lib/postgresql/data
     healthcheck:
       test: [ "CMD", "pg_isready" ]
       interval: 1s
@@ -417,7 +417,7 @@ services:
       - chroma
     restart: always
     volumes:
-      - dify_volume/chroma:/chroma/chroma
+      - ./volumes/chroma:/chroma/chroma
     environment:
       CHROMA_SERVER_AUTHN_CREDENTIALS: ${CHROMA_SERVER_AUTHN_CREDENTIALS:-difyai123456}
       CHROMA_SERVER_AUTHN_PROVIDER: ${CHROMA_SERVER_AUTHN_PROVIDER:-chromadb.auth.token_authn.TokenAuthenticationServerProvider}
@@ -450,7 +450,7 @@ services:
       - ETCD_QUOTA_BACKEND_BYTES=${ETCD_QUOTA_BACKEND_BYTES:-4294967296}
       - ETCD_SNAPSHOT_COUNT=${ETCD_SNAPSHOT_COUNT:-50000}
     volumes:
-      - dify_volume/milvus/etcd:/etcd
+      - ./volumes/milvus/etcd:/etcd
     command: etcd -advertise-client-urls=http://127.0.0.1:2379 -listen-client-urls http://0.0.0.0:2379 --data-dir /etcd
     healthcheck:
       test: ["CMD", "etcdctl", "endpoint", "health"]
@@ -469,7 +469,7 @@ services:
       MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY:-minioadmin}
       MINIO_SECRET_KEY: ${MINIO_SECRET_KEY:-minioadmin}
     volumes:
-      - dify_volume/milvus/minio:/minio_data
+      - ./volumes/milvus/minio:/minio_data
     command: minio server /minio_data --console-address ":9001"
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
@@ -490,7 +490,7 @@ services:
       MINIO_ADDRESS: ${MINIO_ADDRESS:-minio:9000}
       common.security.authorizationEnabled: ${MILVUS_AUTHORIZATION_ENABLED:-true}
     volumes:
-      - dify_volume/milvus/milvus:/var/lib/milvus
+      - ./volumes/milvus/milvus:/var/lib/milvus
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:9091/healthz"]
       interval: 30s
@@ -522,7 +522,7 @@ services:
         soft: ${OPENSEARCH_NOFILE_SOFT:-65536}
         hard: ${OPENSEARCH_NOFILE_HARD:-65536}
     volumes:
-      - dify_volume/opensearch/data:/usr/share/opensearch/data
+      - ./volumes/opensearch/data:/usr/share/opensearch/data
     networks:
       - opensearch-net
 
@@ -534,7 +534,7 @@ services:
     environment:
       OPENSEARCH_HOSTS: '["https://opensearch:9200"]'
     volumes:
-      - dify_volume/opensearch/opensearch_dashboards.yml:/usr/share/opensearch-dashboards/config/opensearch_dashboards.yml
+      - ./volumes/opensearch/opensearch_dashboards.yml:/usr/share/opensearch-dashboards/config/opensearch_dashboards.yml
     networks:
       - opensearch-net
     depends_on:
@@ -549,9 +549,9 @@ services:
     restart: always
     tty: true
     volumes:
-      - dify_volume/myscale/data:/var/lib/clickhouse
-      - dify_volume/myscale/log:/var/log/clickhouse-server
-      - dify_volume/myscale/config/users.d/custom_users_config.xml:/etc/clickhouse-server/users.d/custom_users_config.xml
+      - ./volumes/myscale/data:/var/lib/clickhouse
+      - ./volumes/myscale/log:/var/log/clickhouse-server
+      - ./volumes/myscale/config/users.d/custom_users_config.xml:/etc/clickhouse-server/users.d/custom_users_config.xml
     ports:
       - "${MYSCALE_PORT:-8123}:${MYSCALE_PORT:-8123}"
 
