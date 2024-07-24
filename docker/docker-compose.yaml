@@ -281,8 +281,12 @@ services:
     image: ubuntu/squid:latest
     restart: always
     volumes:
-      - ./ssrf_proxy/squid.conf.template:/etc/squid/squid.conf.template
-      - ./ssrf_proxy/docker-entrypoint.sh:/docker-entrypoint-mount.sh
+      - type: bind
+        source: ./ssrf_proxy/squid.conf.template
+        target: /etc/squid/squid.conf.template
+      - type: bind
+        source: ./ssrf_proxy/docker-entrypoint.sh
+        target: /docker-entrypoint-mount.sh
     entrypoint: [ "sh", "-c", "cp /docker-entrypoint-mount.sh /docker-entrypoint.sh && sed -i 's/\r$$//' /docker-entrypoint.sh && chmod +x /docker-entrypoint.sh && /docker-entrypoint.sh" ]
     environment:
       # pls clearly modify the squid env vars to fit your network environment.
@@ -301,12 +305,24 @@ services:
     image: nginx:latest
     restart: always
     volumes:
-      - ./nginx/nginx.conf.template:/etc/nginx/nginx.conf.template
-      - ./nginx/proxy.conf.template:/etc/nginx/proxy.conf.template
-      - ./nginx/https.conf.template:/etc/nginx/https.conf.template
-      - ./nginx/conf.d:/etc/nginx/conf.d
-      - ./nginx/docker-entrypoint.sh:/docker-entrypoint-mount.sh
-      - ./nginx/ssl:/etc/ssl
+      - type: bind
+        source: ./nginx/nginx.conf.template
+        target: /etc/nginx/nginx.conf.template
+      - type: bind
+        source: ./nginx/proxy.conf.template
+        target: :/etc/nginx/proxy.conf.template
+      - type: bind
+        source: ./nginx/https.conf.template
+        target: /etc/nginx/https.conf.template
+      - type: bind
+        source: ./nginx/conf.d
+        target: /etc/nginx/conf.d
+      - type: volume
+        source: ./nginx/docker-entrypoint.sh
+        target: /docker-entrypoint-mount.sh
+      - type: volume
+        source: ./nginx/ssl
+        target: /etc/ssl
     entrypoint: [ "sh", "-c", "cp /docker-entrypoint-mount.sh /docker-entrypoint.sh && sed -i 's/\r$$//' /docker-entrypoint.sh && chmod +x /docker-entrypoint.sh && /docker-entrypoint.sh" ]
     environment:
       NGINX_SERVER_NAME: ${NGINX_SERVER_NAME:-_}
