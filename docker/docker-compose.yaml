@@ -1,9 +1,5 @@
 version: '3.4'
 
-x-common-variables: &common-variables
-  HOST_BASE_PATH: ${HOST_BASE_PATH:-}
-  EXTRA_PATH: .
-
 x-shared-env: &shared-api-worker-env
   LOG_LEVEL: ${LOG_LEVEL:-INFO}
   DEBUG: ${DEBUG:-false}
@@ -288,10 +284,10 @@ services:
     restart: always
     volumes:
       - type: bind
-        source: ${HOST_BASE_PATH}${EXTRA_PATH}/ssrf_proxy/squid.conf.template
+        source: ./ssrf_proxy/squid.conf.template
         target: /etc/squid/squid.conf.template
       - type: bind
-        source: ${HOST_BASE_PATH:-}./ssrf_proxy/docker-entrypoint.sh
+        source: ./ssrf_proxy/docker-entrypoint.sh
         target: /docker-entrypoint-mount.sh
     entrypoint: [ "sh", "-c", "cp /docker-entrypoint-mount.sh /docker-entrypoint.sh && sed -i 's/\r$$//' /docker-entrypoint.sh && chmod +x /docker-entrypoint.sh && /docker-entrypoint.sh" ]
     environment:
@@ -313,22 +309,22 @@ services:
     restart: always
     volumes:
       - type: bind
-        source: ${HOST_BASE_PATH:-}./nginx/nginx.conf.template
+        source: ./nginx/nginx.conf.template
         target: /etc/nginx/nginx.conf.template
       - type: bind
-        source: ${HOST_BASE_PATH:-}./nginx/proxy.conf.template
+        source: ./nginx/proxy.conf.template
         target: /etc/nginx/proxy.conf.template
       - type: bind
-        source: ${HOST_BASE_PATH:-}./nginx/https.conf.template
+        source: ./nginx/https.conf.template
         target: /etc/nginx/https.conf.template
       - type: bind
-        source: ${HOST_BASE_PATH:-}./nginx/conf.d
+        source: ./nginx/conf.d
         target: /etc/nginx/conf.d
       - type: bind
-        source: ${HOST_BASE_PATH:-}./nginx/docker-entrypoint.sh
+        source: ./nginx/docker-entrypoint.sh
         target: /docker-entrypoint-mount.sh
       - type: bind
-        source: ${HOST_BASE_PATH:-}./nginx/ssl
+        source: ./nginx/ssl
         target: /etc/ssl
     entrypoint: [ "sh", "-c", "cp /docker-entrypoint-mount.sh /docker-entrypoint.sh && sed -i 's/\r$$//' /docker-entrypoint.sh && chmod +x /docker-entrypoint.sh && /docker-entrypoint.sh" ]
     environment:
