@@ -1,5 +1,9 @@
 version: '3.4'
 
+x-common-variables: &common-variables
+  HOST_BASE_PATH: ${HOST_BASE_PATH:-}
+  EXTRA_PATH: .
+
 x-shared-env: &shared-api-worker-env
   LOG_LEVEL: ${LOG_LEVEL:-INFO}
   DEBUG: ${DEBUG:-false}
