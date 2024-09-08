@@ -1,5 +1,4 @@
 x-shared-env: &shared-api-worker-env
-  HOST_BASE_PATH: ${HOST_BASE_PATH:-TEST_PATH}
   LOG_LEVEL: ${LOG_LEVEL:-INFO}
   DEBUG: ${DEBUG:-false}
   FLASK_DEBUG: ${FLASK_DEBUG:-false}
