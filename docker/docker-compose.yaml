@@ -1,3 +1,5 @@
+version: '3.4'
+
 x-shared-env: &shared-api-worker-env
   LOG_LEVEL: ${LOG_LEVEL:-INFO}
   DEBUG: ${DEBUG:-false}
@@ -282,7 +284,7 @@ services:
     restart: always
     volumes:
       - type: bind
-        source: ${HOST_BASE_PATH}${.}/ssrf_proxy/squid.conf.template
+        source: ${HOST_BASE_PATH}/./ssrf_proxy/squid.conf.template
         target: /etc/squid/squid.conf.template
       - type: bind
         source: ${HOST_BASE_PATH:-}./ssrf_proxy/docker-entrypoint.sh
