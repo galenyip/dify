@@ -237,7 +237,7 @@ services:
       POSTGRES_DB: ${POSTGRES_DB:-dify}
       PGDATA: ${PGDATA:-/var/lib/postgresql/data/pgdata}
     volumes:
-      - dify-pgdata-nfs:/var/lib/postgresql/data
+      - dify-pgdata:/var/lib/postgresql/data
     healthcheck:
       test: [ "CMD", "pg_isready" ]
       interval: 1s
@@ -586,5 +586,5 @@ networks:
 
 volumes:
   oradata:
-  dify-pgdata-nfs:
+  dify-pgdata:
     external: true
